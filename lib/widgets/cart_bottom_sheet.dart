@@ -91,7 +91,7 @@ class CartBottomSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text('You don\'t have any order yet!!', style: titleStyle2),
+            Text('You don\'t have any order yet!!', style: titleStyleName),
             SizedBox(height: 16),
             Icon(Icons.remove_shopping_cart, size: 40),
           ],
@@ -117,7 +117,7 @@ class CartBottomSheet extends StatelessWidget {
   Widget CheckoutButton(cart, context) {
     return Center(
       child: RaisedButton(
-        child: Text('Checkout', style: titleStyle),
+        child: Text('Checkout', style: titleStyleName),
         onPressed: cart.cartItems.length == 0
             ? null
             : () {

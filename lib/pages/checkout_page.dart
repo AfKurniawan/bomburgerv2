@@ -126,7 +126,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
       margin: EdgeInsets.only(top: 24, bottom: 64),
       width: double.infinity,
       child: RaisedButton(
-        child: Text('Checkout', style: titleStyle),
+        child: Text('Checkout', style: titleStyleName),
         onPressed: () {
           cart.clearCart();
           Navigator.of(context).pop();
@@ -185,7 +185,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 2),
-                        child: Text('${cartModel.quantity}', style: titleStyle),
+                        child: Text('${cartModel.quantity}', style: titleStylePrice),
                       ),
                       InkWell(
                         customBorder: roundedRectangle4,
@@ -212,7 +212,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                     width: 70,
                     child: Text(
                       'RM. ${cartModel.burg.harga}',
-                      style: titleStyle,
+                      style: titleStylePrice,
                       textAlign: TextAlign.end,
                     ),
                   ),

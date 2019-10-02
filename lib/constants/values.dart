@@ -5,8 +5,8 @@ Color mainColor = Color.fromRGBO(255, 204, 0, 1);
 
 //Style
 final headerStyle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
-final titleStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-final titleStyle2 = TextStyle(fontSize: 16, color: Colors.black45);
+final titleStyleName = TextStyle(fontSize: 13,  color: Colors.black54, fontWeight: FontWeight.bold);
+final titleStylePrice = TextStyle(fontSize: 12, color: Colors.red);
 final subtitleStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
 
 //Decoration

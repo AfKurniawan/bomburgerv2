@@ -68,7 +68,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
         bg.name,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: titleStyle,
+        style: titleStyleName,
       ),
     );
   }
