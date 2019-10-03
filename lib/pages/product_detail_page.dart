@@ -1,16 +1,18 @@
 
+import 'dart:async';
+
 import 'package:bomburger/model/login_response.dart';
 import 'package:bomburger/widgets/dialog_failed.dart';
 import 'package:bomburger/widgets/dialog_success.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
@@ -24,14 +26,21 @@ class ProductDetailPage extends StatefulWidget {
 
   List<Burger> list;
   int index;
+  Burger detail;
 
-  ProductDetailPage({this.index, this.list});
+  //ProductDetailPage({this.detail});
+
+  ProductDetailPage({this.index, this.list, this.detail});
 
   @override
   _productDetailBurgerState createState() => new _productDetailBurgerState();
 }
 
 class _productDetailBurgerState extends State<ProductDetailPage> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
   TextEditingController controllerProductId = new TextEditingController();
   TextEditingController controllerProductQty = new TextEditingController();
   TextEditingController controllerPrice = new TextEditingController();
@@ -233,7 +242,7 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
                 //child: AddSales(),
                 child: Column(
                   children: <Widget>[
-                    _buildTextfieldBayar(),
+                    //_buildTextfieldBayar(),
 
                     SizedBox(height: 30),
 
@@ -425,10 +434,42 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
   }
 
   Widget _buildButtonSale(context) {
+
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Container(
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 60.0,
+                child: Text("Total Amount",style: TextStyle(fontSize: 12.0,color: Colors.grey),),
+              ),
+              //Text("\$${widget.list[widget.index].price.toString()}",style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ),
+        ScopedModelDescendant<AppModel>(
+          builder: (context,child,model){
+            return RaisedButton(
+              color: Colors.deepOrange,
+              onPressed: (){
+                model.addCart(widget.detail);
+                Timer(Duration(milliseconds: 500), (){
+                  showCartSnak(model.cartMsg,model.success);
+                });
+              },
+              child: Text("ADD TO CART",style: TextStyle(color: Colors.white),),
+            );
+          },
+        )
+      ],
+    );
+
+    /*return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        /*InkWell(
+        *//*InkWell(
           child: Container(
             width: ScreenUtil.getInstance().setWidth(330),
             height: ScreenUtil.getInstance().setHeight(100),
@@ -465,9 +506,18 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
               ),
             ),
           ),
-        )*/
+        )*//*
       ],
-    );
+    );*/
+  }
+
+  showCartSnak(String msg,bool flag){
+    _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(msg,style: TextStyle(color: Colors.white),),
+          backgroundColor: (flag) ? Colors.green : Colors.red[500] ,
+          duration: Duration(seconds: 2),
+        ));
   }
 
 
