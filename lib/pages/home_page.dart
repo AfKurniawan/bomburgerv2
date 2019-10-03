@@ -1,3 +1,4 @@
+import 'package:bomburger/pages/product_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bomburger/constants/constants.dart';
 import 'package:bomburger/constants/values.dart';
@@ -17,8 +18,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int value = 1;
 
+  //List list;
+
+  List<Burger> list;
+
   Future<List<Burger>> getData() async {
-    List<Burger> list;
+
     var res = await http.get(Uri.encodeFull(Constants.burgerUrl),
         headers: {"Accept": "application/json"});
     print(res.body);
@@ -26,13 +31,14 @@ class _MyHomePageState extends State<MyHomePage> {
       var data = json.decode(res.body);
       var rest = data["burgers"] as List;
       print(rest);
-      list = rest.map<Burger>((json) => Burger.fromJson(json)).toList();
+
+      list = rest.map<Burger>((j) => Burger.fromJson(j)).toList();
+
+      //list = rest.map<Burger>((json) => Burger.fromJson(json)).toList();
     }
     print("List Size: ${list.length}");
     return list;
   }
-
-
 
   showCart() {
     showModalBottomSheet(
@@ -57,17 +63,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 future: getData(),
                 builder: (context, snapshot) {
                   return snapshot.data != null
-                      ? _buildFoodList(snapshot.data)
+                      ? _buildBurgerList(snapshot.data)
                       : Center(
-                        child: new SizedBox(
-                            width: 40.0,
-                            height: 40.0,
-                            child:
-                            const CircularProgressIndicator(
-                              value: null,
-                              strokeWidth: 1.0,
-                            )),
-                      );
+                          child: new SizedBox(
+                              width: 40.0,
+                              height: 40.0,
+                              child: const CircularProgressIndicator(
+                                value: null,
+                                strokeWidth: 1.0,
+                              )),
+                        );
                 }),
           ],
         ),
@@ -139,14 +144,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBurgerList(List<Burger> burger) {
     return Expanded(
-
       child: ListView.builder(
           itemCount: burger == null ? 0 : burger.length,
           itemBuilder: (context, position) {
-
-
             return Card(
-
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 child: Column(
@@ -159,17 +160,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(10.0),
                             child: Image.network(
-                                Constants.imgUrl + '${burger[position].picture}',
-                                fit: BoxFit.cover)),
+                                Constants.imgUrl + list[position].picture,
+                                   // '${burger[position].picture}',
+                                fit: BoxFit.cover
+                            )),
                         onTap: () {
-                          /*Navigator.push(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       ProductDetailPage(
                                         list: list,
-                                        index: i,
-                                      )));*/
+                                        index: position,
+                                      )));
                         },
                       ),
                     ),
@@ -184,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: <Widget>[
                               Visibility(
                                 visible: true,
-                                child: Text('${burger[position].name}',
+                                child: Text(list[position].name,
                                     style: Theme.of(context)
                                         .textTheme
                                         .title
@@ -195,23 +198,24 @@ class _MyHomePageState extends State<MyHomePage> {
                               SizedBox(
                                 height: 5.0,
                               ),
-                              /*Visibility(
-                                visible: false,
-                                child: Text("productID " + list[i]['id'],
+                              Visibility(
+                                visible: true,
+                                child: Text(list[position].id,
                                     style: Theme
                                         .of(context)
                                         .textTheme
                                         .title
                                         .merge(TextStyle(fontSize: 14.0))),
-                              ),*/
+                              ),
                               Visibility(
                                 visible: true,
-                                child: Text('RM. ${burger[position].price}',
+                                child: Text('RM.' + list[position].price,
                                     style: Theme.of(context)
                                         .textTheme
                                         .title
                                         .merge(TextStyle(
-                                            fontSize: 16.0, color: Colors.red))),
+                                            fontSize: 16.0,
+                                            color: Colors.red))),
                               ),
 
                               /* Visibility(
@@ -257,7 +261,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                     addItemToCard(context, burger[position]),
                                 splashColor: Colors.white70,
                                 customBorder: roundedRectangle4,
-                                child: Icon(Icons.add_shopping_cart, color: Colors.white,),
+                                child: Icon(
+                                  Icons.add_shopping_cart,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -306,7 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Padding(
                               padding: EdgeInsets.all(48),
                               child: CircularProgressIndicator(
-                                strokeWidth: 1.0,
+                                  strokeWidth: 1.0,
                                   value: progress.expectedTotalBytes != null
                                       ? progress.cumulativeBytesLoaded /
                                           progress.expectedTotalBytes
@@ -332,8 +339,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
 
                     SizedBox(
-            height: 8,
-            ),
+                      height: 8,
+                    ),
 
                     Padding(
                       padding: const EdgeInsets.only(left: 5, right: 5),
@@ -345,16 +352,16 @@ class _MyHomePageState extends State<MyHomePage> {
                             'RM. ${burger[position].harga}',
                             style: titleStylePrice,
                           ),
-                                InkWell(
-                                  onTap: () =>
-                                      addItemToCard(context, burger[position]),
-                                  splashColor: Colors.white70,
-                                  customBorder: roundedRectangle4,
-                                  child: Icon(Icons.add_shopping_cart, color: Colors.deepOrange,),
-                                ),
-
-
-
+                          InkWell(
+                            onTap: () =>
+                                addItemToCard(context, burger[position]),
+                            splashColor: Colors.white70,
+                            customBorder: roundedRectangle4,
+                            child: Icon(
+                              Icons.add_shopping_cart,
+                              color: Colors.deepOrange,
+                            ),
+                          ),
                         ],
                       ),
                     ),

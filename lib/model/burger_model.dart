@@ -2,13 +2,10 @@ import 'dart:io';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'package:localstorage/localstorage.dart';
-
 import '../constants/constants.dart';
 
 class Burger {
@@ -45,11 +42,15 @@ class Burger {
   }
 }
 
+
+
+
+
 class AppModel extends Model{
 
   List listburg;
 
-  Future<List<Burger>> getData() async {
+  /*Future<List<Burger>> getData() async {
     List<Burger> list;
     var res = await http.get(Uri.encodeFull(Constants.burgerUrl),
         headers: {"Accept": "application/json"});
@@ -62,7 +63,7 @@ class AppModel extends Model{
     }
     print("List Size: ${list.length}");
     return list;
-  }
+  }*/
 
   List<Burger> _data = [];
   List<Burger> _cart = [];
