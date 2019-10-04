@@ -1,3 +1,4 @@
+import 'package:bomburger/pages/new_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bomburger/model/cart_model.dart';
 import 'package:bomburger/pages/home_page.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MyHomePage(),
+        home: NewHomePage(),
       ),
     );
   }
