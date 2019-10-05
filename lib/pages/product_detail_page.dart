@@ -152,8 +152,6 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: GradientAppBar(
         centerTitle: true,

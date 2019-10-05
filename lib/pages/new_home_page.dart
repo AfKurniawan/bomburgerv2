@@ -2,12 +2,16 @@ import 'package:bomburger/constants/constants.dart';
 import 'package:bomburger/constants/values.dart';
 import 'package:bomburger/model/burger_model.dart';
 import 'package:bomburger/model/cart_model.dart';
+import 'package:bomburger/pages/details.dart';
+import 'package:bomburger/pages/product_detail_page.dart';
+import 'package:bomburger/pages/read_write_data_page_example.dart';
 import 'package:bomburger/widgets/cart_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewHomePage extends StatefulWidget {
   @override
@@ -33,6 +37,20 @@ class _NewHomePageState extends State<NewHomePage> {
     print("List Size: ${list.length}");
     return list;
   }
+
+  @override
+  void initState() {
+
+      // hapus shared prefs login
+      //final prefs = await SharedPreferences.getInstance();
+     // prefs.remove('my_int_key');
+      //prefs.remove('nik');
+    // TODO: implement initState
+    super.initState();
+   // getSharedPrefs();
+  }
+
+
 
   Widget buildAppBar() {
     int items = 0;
@@ -74,15 +92,6 @@ class _NewHomePageState extends State<NewHomePage> {
       context: context,
       builder: (context) => CartBottomSheet(),
     );
-  }
-
-  addItemToCard(BuildContext context, Burger burger) {
-    final snackBar = SnackBar(
-      content: Text('${burger.name} added to cart'),
-      duration: Duration(milliseconds: 3000),
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
-    Provider.of<MyCart>(context).addItem(CartItem(burg: burger, quantity: 1));
   }
 
   @override
@@ -146,16 +155,28 @@ class _NewHomePageState extends State<NewHomePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                          height: 125.0,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10.0),
-                                  topRight: Radius.circular(10.0)),
-                              image: DecorationImage(
-                                  image: NetworkImage(Constants.imgUrl +
-                                      list[position].picture),
-                                  fit: BoxFit.fitHeight)),
+                        InkWell(
+                          child: Container(
+                            height: 125.0,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10.0),
+                                    topRight: Radius.circular(10.0)),
+                                image: DecorationImage(
+                                    image: NetworkImage(Constants.imgUrl +
+                                        list[position].picture),
+                                    fit: BoxFit.fitHeight)),
+                          ),
+                          onTap: (){
+                            _save(context, list[position]);
+                            /*Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context)=> Details(detail: list[position]))
+                            );*/
+
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ReadWrite())
+                            );
+                          },
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0, top: 5.0),
@@ -189,23 +210,26 @@ class _NewHomePageState extends State<NewHomePage> {
                         ),
                       ],
                     ),
-                    InkWell(
-                        child: Positioned(
+                    Positioned(
                       left: 128.0,
                       top: 160.0,
-                      child: Container(
-                        height: 40.0,
-                        width: 40.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.amber),
-                        child: Center(
-                          child: Icon(Icons.shopping_cart, color: Colors.white),
+                      child: InkWell(
+                        child: Container(
+                          height: 40.0,
+                          width: 40.0,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: Colors.amber),
+                          child: Center(
+                            child:
+                                Icon(Icons.shopping_cart, color: Colors.white),
+                          ),
                         ),
+                        onTap: () => addItemToCard(context, list[position]),
+                        splashColor: Colors.white70,
+                        customBorder: roundedRectangle4,
                       ),
-                    ),
-                      onTap: () => addItemToCard(context, list[position]),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -216,5 +240,31 @@ class _NewHomePageState extends State<NewHomePage> {
     );
   }
 
-  Widget _buildFoodCard() {}
+  addItemToCard(BuildContext context, Burger burger) {
+    final snackBar = SnackBar(
+      content: Text('${burger.name} added to cart'),
+      duration: Duration(milliseconds: 3000),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+    Provider.of<MyCart>(context).addItem(CartItem(burg: burger, quantity: 1));
+  }
+
+  /*_save(BuildContext context, Burger burger) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'my_int_key';
+    final value = '${burger.name}'.toString();
+    prefs.setString(key, value);
+    print('saved $value');
+  }*/
+
+  _save(BuildContext context, Burger burger) async {
+
+    String burgname = '${burger.name}'.toString();
+    DbCart cart = DbCart();
+    cart.name = burgname;
+    cart.qty = 15;
+    DatabaseHelper helper = DatabaseHelper.instance;
+    int id = await helper.insert(cart);
+    print('inserted row: $id');
+  }
 }

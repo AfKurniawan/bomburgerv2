@@ -8,47 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
 import '../constants/constants.dart';
 
-class Burger {
-  String id;
-  String name;
-  String picture;
-  String price;
-  double harga;
-  String stock_quantity;
-  int bid;
-  int shopid;
-
-
-  Burger({this.id, this.name, this.picture, this.price, this.stock_quantity, this.harga, this.bid, this.shopid});
-
-
-
-
-
-  factory Burger.fromJson(Map<String, dynamic> json){
-
-
-
-    return Burger(
-
-      id:json['id'],
-      bid: int.parse(json['id']),
-      name:json['name'],
-      picture: json['picture'],
-      price: json['price'],
-      harga: double.parse(json['price']),
-      stock_quantity: json['stock_quantity']
-    );
-  }
-}
-
-
-
-
-
 class AppModel extends Model{
 
-  List listburg;
+  List<Burger> listburg;
 
   /*Future<List<Burger>> getData() async {
     List<Burger> list;
@@ -109,7 +71,7 @@ class AppModel extends Model{
       var qry = "CREATE TABLE IF NOT EXISTS shopping ( "
           "id INTEGER PRIMARY KEY,"
           "name TEXT,"
-          "image Text,"
+          "picture Text,"
           "price REAL,"
           "datetime DATETIME)";
       await this._db.execute(qry);
@@ -117,7 +79,7 @@ class AppModel extends Model{
           "id INTEGER PRIMARY KEY,"
           "shop_id INTEGER,"
           "name TEXT,"
-          "image Text,"
+          "picture Text,"
           "price REAL,"
           "datetime DATETIME)";
 
@@ -145,7 +107,7 @@ class AppModel extends Model{
         Burger d = new Burger();
         d.id = dd["id"];
         d.name = dd["name"];
-        d.picture = dd["image"];
+        d.picture = dd["picture"];
         d.price = dd["price"];
         _data.add(d);
       }).toList();
@@ -164,13 +126,13 @@ class AppModel extends Model{
           print("Called insert ${i}");
           Burger d = new Burger();
           d.bid = i + 1;
-          d.name = listburg[i]["name"];
-          d.picture = listburg[i]["image"];
-          d.price = listburg[i]["price"];
+          d.name = listburg[i].name;
+          d.picture = listburg[i].picture;
+          d.price = listburg[i].harga.toString();
 
           try {
             var qry =
-                'INSERT INTO shopping(name, price, image,rating,fav) VALUES("${d.name}",${d.price}, "${d.picture}")';
+                'INSERT INTO shopping(name, price, picture) VALUES("${d.name}",${d.price}","${d.picture}")';
             var _res = await tx.rawInsert(qry);
           } catch (e) {
             print("ERRR >>>");
@@ -193,7 +155,7 @@ class AppModel extends Model{
     await this._db.transaction((tx) async {
       try {
         var qry =
-            'INSERT INTO cart_list(name, price, image) VALUES(${d.id},"${d.name}",${d.price}, "${d.picture}")';
+            'INSERT INTO cart_list(name, price, picture) VALUES(${d.id},"${d.name}",${d.price}, "${d.picture}")';
         var _res = await tx.execute(qry);
         this.FetchCartList();
       } catch (e) {
@@ -213,7 +175,7 @@ class AppModel extends Model{
         Burger d = new Burger();
         d.id = dd["id"];
         d.name = dd["name"];
-        d.picture = dd["image"];
+        d.picture = dd["pisture"];
         d.price = dd["price"];
         _cart.add(d);
       }).toList();
@@ -279,6 +241,33 @@ class Item {
   final String name;
 
   Item(this.name);
+}
+
+
+class Burger {
+  String id;
+  String name;
+  String picture;
+  String price;
+  double harga;
+  String stock_quantity;
+  int bid;
+  int shopid;
+
+
+  Burger({this.id, this.name, this.picture, this.price, this.stock_quantity, this.harga, this.bid, this.shopid});
+
+  factory Burger.fromJson(Map<String, dynamic> json){
+    return Burger(
+        id:json['id'],
+        bid: int.parse(json['id']),
+        name:json['name'],
+        picture: json['picture'],
+        price: json['price'],
+        harga: double.parse(json['price']),
+        stock_quantity: json['stock_quantity']
+    );
+  }
 }
 
 
