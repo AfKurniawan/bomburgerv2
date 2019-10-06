@@ -1,11 +1,20 @@
 import 'dart:ui';
+import 'package:bomburger/model/post_response.dart';
+import 'package:bomburger/widgets/dialog_failed.dart';
+import 'package:bomburger/widgets/dialog_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bomburger/constants/constants.dart';
 import 'package:bomburger/constants/values.dart';
 import 'package:bomburger/model/cart_model.dart';
 import 'package:intl/intl.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+
+ProgressDialog pd;
 
 class CheckOutPage extends StatefulWidget {
   _CheckOutPageState createState() => _CheckOutPageState();
@@ -18,6 +27,13 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   get month => DateFormat('MMMM').format(now);
   double oldTotal = 0;
   double total = 0;
+
+  CartItem cartModel = new CartItem();
+
+
+  TextEditingController controllerProductQty = new TextEditingController();
+
+
 
   ScrollController scrollController = ScrollController();
   AnimationController animationController;
@@ -33,8 +49,95 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     super.dispose();
   }
 
+
+  Future<PostResponse> post(String url, var body) async {
+    return await http.post(Uri.encodeFull(url),
+        body: body,
+        headers: {"Accept": "application/json"}).then((http.Response response) {
+      final int statusCode = response.statusCode;
+
+      if (statusCode < 200 || statusCode > 400 || json == null) {
+        throw new Exception("Error while fetching data");
+      }
+
+      return PostResponse.fromJson(json.decode(response.body));
+    });
+  }
+
+
+  void _postSalesAction() {
+
+    print('opo iki  ${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}');
+
+    print('quantity: ' + controllerProductQty.text);
+
+
+    post(Constants.addSalesUrl, {
+      "amount": '${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}',
+      "receive_amount": '${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}',
+//      "change_amount": controllerChangeAmount.text,
+     "payment_type": "Cash",
+//      "customer_id": controllerCustomerId.text,
+      "product_id": '3',
+      "qnt": controllerProductQty.text,
+      "price": '3.8',
+      "seller_id": '1',
+      "store_id": '1'
+    }).then((response) async {
+      pd.hide();
+
+      if (response.status == "success") {
+        pd.hide();
+        _successDialog(context);
+      } else {
+        _failedDialog(context);
+        pd.hide();
+      }
+    }, onError: (error) {
+      _failedDialog(context);
+      pd.hide();
+    });
+  }
+
+
+  _failedDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DialogFailed();
+        });
+  }
+
+  _successDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DialogSuccess();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    pd = new ProgressDialog(context,type: ProgressDialogType.Normal);
+
+    pd.style(message: 'Please wait...');
+
+    //Optional
+    pd.style(
+      message: 'Please wait...',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressTextStyle: TextStyle(
+          color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
+
+
     var cart = Provider.of<MyCart>(context);
     return Scaffold(
       body: SingleChildScrollView(
@@ -101,6 +204,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   }
 
   Widget buildPriceInfo(MyCart cart) {
+
     oldTotal = total;
     total = 0;
     for (CartItem cart in cart.cartItems) {
@@ -121,7 +225,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     );
   }
 
-  Widget checkoutButton(MyCart cart, context) {
+  Widget checkoutButton(MyCart cart, context ) {
     return Container(
       margin: EdgeInsets.only(top: 24, bottom: 64),
       width: double.infinity,
@@ -129,7 +233,8 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
         child: Text('Checkout', style: titleStyleName),
         onPressed: () {
           cart.clearCart();
-          Navigator.of(context).pop();
+          _postSalesAction();
+          //Navigator.of(context).pop();
         },
         padding: EdgeInsets.symmetric(horizontal: 64, vertical: 12),
         color: mainColor,
@@ -167,6 +272,20 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                       cartModel.burg.name,
                       style: subtitleStyle,
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  Visibility(
+                    visible: true,
+                    child: Container(
+                      width: 100,
+                      child: TextFormField(
+                        controller: controllerProductQty
+                          ..text = '${cartModel.quantity}',
+                        decoration: InputDecoration(
+                          hintText: "1",
+                        ),
+                      ),
                     ),
                   ),
                   Row(

@@ -1,4 +1,5 @@
 
+import 'package:bomburger/pages/new_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -55,7 +56,7 @@ class DialogSuccess extends StatelessWidget {
                           colorBrightness: Brightness.dark,
                           onPressed: (){
                             //Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => NewHomePage()));
                             pd.hide();
                             },
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

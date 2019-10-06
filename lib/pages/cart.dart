@@ -64,7 +64,7 @@ class CartState extends State<Cart>{
                         Expanded(
                           child: Text(d.name,style: TextStyle(fontWeight: FontWeight.w600,fontSize: 15.0),),
                         ),
-                        Container(
+                       /* Container(
                             alignment: Alignment.bottomRight,
                             child: ScopedModelDescendant<AppModel>(
                               builder: (cotext,child,model){
@@ -79,7 +79,7 @@ class CartState extends State<Cart>{
                                 );
                               },
                             )
-                        )
+                        )*/
                       ],
                     ),
                     SizedBox(height: 5.0,),
@@ -114,14 +114,14 @@ class CartState extends State<Cart>{
                 )
             )
         ),
-        child: ScopedModelDescendant<AppModel>(
+        /*child: ScopedModelDescendant<AppModel>(
           builder: (context,child,model){
             return ListView(
               shrinkWrap: true,
               children: model.cartListing.map((d)=>generateCart(d)).toList(),
             );
           },
-        ),
+        ),*/
       )
     );
   }

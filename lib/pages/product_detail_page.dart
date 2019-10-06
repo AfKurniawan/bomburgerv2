@@ -152,6 +152,8 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: GradientAppBar(
         centerTitle: true,
@@ -447,7 +449,7 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
             ],
           ),
         ),
-        ScopedModelDescendant<AppModel>(
+        /*ScopedModelDescendant<AppModel>(
           builder: (context,child,model){
             return RaisedButton(
               color: Colors.deepOrange,
@@ -460,7 +462,7 @@ class _productDetailBurgerState extends State<ProductDetailPage> {
               child: Text("ADD TO CART",style: TextStyle(color: Colors.white),),
             );
           },
-        )
+        )*/
       ],
     );
 

@@ -160,7 +160,7 @@ class DetailsState extends State<Details>{
                       ],
                     ),
                   ),
-                  ScopedModelDescendant<AppModel>(
+                 /* ScopedModelDescendant<AppModel>(
                     builder: (context,child,model){
                       return RaisedButton(
                         color: Colors.deepOrange,
@@ -173,7 +173,7 @@ class DetailsState extends State<Details>{
                         child: Text("ADD TO CART",style: TextStyle(color: Colors.white),),
                       );
                     },
-                  )
+                  )*/
                 ],
               )
           ),

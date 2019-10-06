@@ -4,12 +4,10 @@ import 'package:bomburger/model/burger_model.dart';
 import 'package:bomburger/model/cart_model.dart';
 import 'package:bomburger/pages/details.dart';
 import 'package:bomburger/pages/product_detail_page.dart';
-import 'package:bomburger/pages/read_write_data_page_example.dart';
 import 'package:bomburger/widgets/cart_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,22 +17,35 @@ class NewHomePage extends StatefulWidget {
 }
 
 class _NewHomePageState extends State<NewHomePage> {
+
+
   List<Burger> list;
+
+  List<Burger> listCart;
+
+  SharedPreferences sharedPreferences;
+
+  void getSharedPref() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+   String paijo =  sharedPreferences.getString("list");
+   print(paijo);
+  }
+
 
   Future<List<Burger>> getData() async {
     var res = await http.get(Uri.encodeFull(Constants.burgerUrl),
         headers: {"Accept": "application/json"});
-    print(res.body);
+    //print(res.body);
     if (res.statusCode == 200) {
       var data = json.decode(res.body);
       var rest = data["burgers"] as List;
-      print(rest);
+     // print(rest);
 
       list = rest.map<Burger>((j) => Burger.fromJson(j)).toList();
 
       //list = rest.map<Burger>((json) => Burger.fromJson(json)).toList();
     }
-    print("List Size: ${list.length}");
+   // print("List Size: ${list.length}");
     return list;
   }
 
@@ -48,6 +59,7 @@ class _NewHomePageState extends State<NewHomePage> {
     // TODO: implement initState
     super.initState();
    // getSharedPrefs();
+
   }
 
 
@@ -62,7 +74,7 @@ class _NewHomePageState extends State<NewHomePage> {
         children: <Widget>[
           Text('MENU', style: headerStyle),
           Spacer(),
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
+         // IconButton(icon: Icon(Icons.search), onPressed: () {}),
           Stack(
             children: <Widget>[
               IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
@@ -112,8 +124,8 @@ class _NewHomePageState extends State<NewHomePage> {
                       ? _buildGridView(snapshot.data)
                       : Center(
                           child: new SizedBox(
-                              width: 40.0,
-                              height: 40.0,
+                              width: 20.0,
+                              height: 20.0,
                               child: const CircularProgressIndicator(
                                 value: null,
                                 strokeWidth: 1.0,
@@ -136,7 +148,7 @@ class _NewHomePageState extends State<NewHomePage> {
               crossAxisCount: 2,
               crossAxisSpacing: 10,
               childAspectRatio: 0.85,
-              mainAxisSpacing: 10.0),
+              mainAxisSpacing: 8.0),
           physics: BouncingScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, position) {
@@ -168,14 +180,14 @@ class _NewHomePageState extends State<NewHomePage> {
                                     fit: BoxFit.fitHeight)),
                           ),
                           onTap: (){
-                            _save(context, list[position]);
-                            /*Navigator.push(
+                            //_save(context, list[position]);
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context)=> Details(detail: list[position]))
-                            );*/
-
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ReadWrite())
                             );
+
+                           // Navigator.push(context, MaterialPageRoute(builder: (context) => ReadWrite())
+
                           },
                         ),
                         Padding(
@@ -184,7 +196,7 @@ class _NewHomePageState extends State<NewHomePage> {
                             list[position].name,
                             style: TextStyle(
                                 fontFamily: 'Quicksand',
-                                fontSize: 15.0,
+                                fontSize: 12.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -203,7 +215,7 @@ class _NewHomePageState extends State<NewHomePage> {
                             "RM. " + list[position].price,
                             style: TextStyle(
                                 fontFamily: 'Quicksand',
-                                fontSize: 14.0,
+                                fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orange),
                           ),
@@ -211,12 +223,12 @@ class _NewHomePageState extends State<NewHomePage> {
                       ],
                     ),
                     Positioned(
-                      left: 128.0,
-                      top: 160.0,
+                      right: 5.0,
+                      bottom: 40.0,
                       child: InkWell(
                         child: Container(
-                          height: 40.0,
-                          width: 40.0,
+                          height: 30.0,
+                          width: 30.0,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.0),
                               color: Colors.amber),
@@ -246,25 +258,15 @@ class _NewHomePageState extends State<NewHomePage> {
       duration: Duration(milliseconds: 3000),
     );
     Scaffold.of(context).showSnackBar(snackBar);
-    Provider.of<MyCart>(context).addItem(CartItem(burg: burger, quantity: 1));
+    Provider.of<MyCart>(context).addItemsSf(CartItem(burg:burger, quantity: 1));
+   // addCart(CartItem(burg: bu, quantity: 1),);
   }
 
-  /*_save(BuildContext context, Burger burger) async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = 'my_int_key';
-    final value = '${burger.name}'.toString();
-    prefs.setString(key, value);
-    print('saved $value');
-  }*/
 
-  _save(BuildContext context, Burger burger) async {
 
-    String burgname = '${burger.name}'.toString();
-    DbCart cart = DbCart();
-    cart.name = burgname;
-    cart.qty = 15;
-    DatabaseHelper helper = DatabaseHelper.instance;
-    int id = await helper.insert(cart);
-    print('inserted row: $id');
-  }
+
+
 }
+
+
+

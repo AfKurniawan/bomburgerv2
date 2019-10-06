@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 class Constants{
 
-  static const String baseUrl     = "http://outlet.bomburger.my/";
-  //static const String baseUrl     = "http://192.168.43.143/bomburger.my/";
+  //static const String baseUrl     = "http://outlet.bomburger.my/";
+  static const String baseUrl     = "http://192.168.43.143/bomburger.my/";
 
   static const String burgerUrl   = baseUrl + "api_ci/index.php/burgers";
   static const String drinkUrl    = baseUrl + "api_ci/index.php/drinks";
 
 
-  static const String imgUrl      = baseUrl + "uploads/products/";
+  //static const String imgUrl      = baseUrl + "uploads/products/";
 
-
-  //static const String imgUrl      = baseUrl + "management/uploads/products/";
-  static const String loginUrl    = baseUrl + "api_ci/index.php/auth";
-  static const String addSalesUrl = baseUrl + "api_ci/index.php/addsales";
+   static const String imgUrl      = baseUrl + "management/uploads/products/";
+  static const String loginUrl     = baseUrl + "api_ci/index.php/auth";
+  static const String addSalesUrl  = baseUrl + "api_ci/index.php/addsales";
   static const String addSalesItem = baseUrl + "api_ci/index.php/addsalesitem";
 
 
