@@ -69,6 +69,7 @@ class CartBottomSheet extends StatelessWidget {
         itemCount: cart.cartItems.length,
         physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) {
+
           return Card(
             child: ListTile(
               leading: CircleAvatar(
@@ -76,10 +77,12 @@ class CartBottomSheet extends StatelessWidget {
                       NetworkImage(Constants.imgUrl + cart.cartItems[index].burg.picture)),
               title: Text('${cart.cartItems[index].burg.name}',
                   style: subtitleStyle),
-              subtitle: Text('RM.  ${cart.cartItems[index].burg.harga}'),
+              subtitle: Text('RM.  ${cart.cartItems[index].burg.harga} dg id: ${cart.cartItems[index].burg.id}'),
               trailing: Text('x ${cart.cartItems[index].quantity}',
                   style: subtitleStyle),
+
             ),
+
           );
         },
       ),

@@ -1,10 +1,12 @@
 import 'package:bomburger/constants/constants.dart';
 import 'package:bomburger/constants/values.dart';
+import 'package:bomburger/data/database.dart';
 import 'package:bomburger/model/burger_model.dart';
 import 'package:bomburger/model/cart_model.dart';
+import 'package:bomburger/model/new_cart_model.dart';
 import 'package:bomburger/pages/details.dart';
-import 'package:bomburger/pages/product_detail_page.dart';
 import 'package:bomburger/widgets/cart_bottom_sheet.dart';
+import 'package:bomburger/widgets/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,11 +14,21 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewHomePage extends StatefulWidget {
+
+
+  final Burger bruger;
+  final CartItem cit;
+
+  NewHomePage({this.bruger, this.cit});
+
+
   @override
   _NewHomePageState createState() => new _NewHomePageState();
 }
 
 class _NewHomePageState extends State<NewHomePage> {
+
+
 
 
   List<Burger> list;
@@ -42,8 +54,6 @@ class _NewHomePageState extends State<NewHomePage> {
      // print(rest);
 
       list = rest.map<Burger>((j) => Burger.fromJson(j)).toList();
-
-      //list = rest.map<Burger>((json) => Burger.fromJson(json)).toList();
     }
    // print("List Size: ${list.length}");
     return list;
@@ -77,7 +87,14 @@ class _NewHomePageState extends State<NewHomePage> {
          // IconButton(icon: Icon(Icons.search), onPressed: () {}),
           Stack(
             children: <Widget>[
-              IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
+              //IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
+
+          IconButton(icon: Icon(Icons.shopping_cart), onPressed:(){
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> MyCartPage())
+            );
+          }),
               Positioned(
                 right: 0,
                 child: Container(
@@ -108,6 +125,9 @@ class _NewHomePageState extends State<NewHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -139,6 +159,9 @@ class _NewHomePageState extends State<NewHomePage> {
   }
 
   Widget _buildGridView(List<Burger> list) {
+
+    int jum = 1;
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -200,6 +223,17 @@ class _NewHomePageState extends State<NewHomePage> {
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, top: 5.0),
+                          child: Text(
+                            list[position].id,
+                            style: TextStyle(
+                                fontFamily: 'Quicksand',
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                         Padding(
                           padding:
                               const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -237,9 +271,21 @@ class _NewHomePageState extends State<NewHomePage> {
                                 Icon(Icons.shopping_cart, color: Colors.white),
                           ),
                         ),
-                        onTap: () => addItemToCard(context, list[position]),
-                        splashColor: Colors.white70,
-                        customBorder: roundedRectangle4,
+
+                        onTap: () async {
+                          final snackBar = SnackBar(
+                            content: Text(list[position].name + "added to cart"),
+                            duration: Duration(milliseconds: 3000),
+                          );
+                          Scaffold.of(context).showSnackBar(snackBar);
+
+                            await KeranjangDatabaseProvider.db.addCartToDatabase(Keranjang(nama: list[position].name, qty: 1.toString()));
+                           // Navigator.pop(context);
+                          }
+
+
+                        //onTap: () => addItemToCard(list[position]),
+
                       ),
                     )
                   ],
@@ -252,14 +298,15 @@ class _NewHomePageState extends State<NewHomePage> {
     );
   }
 
-  addItemToCard(BuildContext context, Burger burger) {
+  addItemToCard(BuildContext context, Burger burger) async {
+
     final snackBar = SnackBar(
       content: Text('${burger.name} added to cart'),
       duration: Duration(milliseconds: 3000),
     );
     Scaffold.of(context).showSnackBar(snackBar);
     Provider.of<MyCart>(context).addItemsSf(CartItem(burg:burger, quantity: 1));
-   // addCart(CartItem(burg: bu, quantity: 1),);
+
   }
 
 

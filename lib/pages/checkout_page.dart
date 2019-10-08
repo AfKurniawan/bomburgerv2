@@ -28,10 +28,13 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   double oldTotal = 0;
   double total = 0;
 
-  CartItem cartModel = new CartItem();
+
+
+  List<CartItem> list;
 
 
   TextEditingController controllerProductQty = new TextEditingController();
+  TextEditingController controllerProductId = new TextEditingController();
 
 
 
@@ -67,9 +70,17 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   void _postSalesAction() {
 
+
+    var cart = Provider.of<MyCart>(context);
+
+    print('cart model id');
+
     print('opo iki  ${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}');
 
     print('quantity: ' + controllerProductQty.text);
+
+
+
 
 
     post(Constants.addSalesUrl, {
@@ -78,7 +89,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 //      "change_amount": controllerChangeAmount.text,
      "payment_type": "Cash",
 //      "customer_id": controllerCustomerId.text,
-      "product_id": '3',
+      "product_id": '${cart.cartItems}',
       "qnt": controllerProductQty.text,
       "price": '3.8',
       "seller_id": '1',
@@ -88,6 +99,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
       if (response.status == "success") {
         pd.hide();
+        //cartModel.clearCart();
         _successDialog(context);
       } else {
         _failedDialog(context);
@@ -118,6 +130,9 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+
+
+
 
     pd = new ProgressDialog(context,type: ProgressDialogType.Normal);
 
@@ -155,7 +170,10 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                 shrinkWrap: true,
                 controller: scrollController,
                 itemBuilder: (BuildContext context, int index) {
+                  print(cart.cartItems[index].burg.id);
+
                   return buildCartItemList(cart, cart.cartItems[index]);
+
                 },
               ),
               SizedBox(height: 16),
@@ -170,6 +188,8 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   }
 
   List<Widget> buildHeader() {
+
+
     return [
       SafeArea(
         child: InkWell(
@@ -205,6 +225,8 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   Widget buildPriceInfo(MyCart cart) {
 
+
+
     oldTotal = total;
     total = 0;
     for (CartItem cart in cart.cartItems) {
@@ -232,7 +254,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
       child: RaisedButton(
         child: Text('Checkout', style: titleStyleName),
         onPressed: () {
-          cart.clearCart();
+         // cart.clearCart();
           _postSalesAction();
           //Navigator.of(context).pop();
         },
@@ -244,10 +266,10 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   }
 
   Widget buildCartItemList(MyCart cart, CartItem cartModel) {
+
     return Card(
-      margin: EdgeInsets.only(bottom: 16),
-      child: Container(
-        padding: EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,19 +297,6 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                     ),
                   ),
 
-                  Visibility(
-                    visible: true,
-                    child: Container(
-                      width: 100,
-                      child: TextFormField(
-                        controller: controllerProductQty
-                          ..text = '${cartModel.quantity}',
-                        decoration: InputDecoration(
-                          hintText: "1",
-                        ),
-                      ),
-                    ),
-                  ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -350,6 +359,10 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
           ],
         ),
       ),
+
+
     );
+
+
   }
 }

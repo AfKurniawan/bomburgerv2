@@ -116,12 +116,12 @@ class CartItem {
 
 
   Burger burg;
-  //String name;
+  String name;
   int quantity;
 
 
 
-  CartItem({this.burg, this.quantity});
+  CartItem({this.burg, this.name, this.quantity});
 
   CartItem.fromMap(Map map) :
         this.burg = map['burg'],
