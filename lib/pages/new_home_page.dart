@@ -1,5 +1,6 @@
 import 'package:bomburger/constants/constants.dart';
 import 'package:bomburger/constants/values.dart';
+import 'package:bomburger/data/database_helper.dart';
 import 'package:bomburger/data/database_provider.dart';
 import 'package:bomburger/model/burger_model.dart';
 import 'package:bomburger/model/cart_model.dart';
@@ -33,9 +34,11 @@ class _NewHomePageState extends State<NewHomePage> {
 
   List<Burger> list;
 
-  List<Burger> listCart;
+  List<CartItem> listCart;
 
   SharedPreferences sharedPreferences;
+
+  DatabaseHelper db = new DatabaseHelper();
 
   void getSharedPref() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -58,6 +61,9 @@ class _NewHomePageState extends State<NewHomePage> {
    // print("List Size: ${list.length}");
     return list;
   }
+
+
+
 
   @override
   void initState() {
@@ -310,7 +316,7 @@ class _NewHomePageState extends State<NewHomePage> {
       duration: Duration(milliseconds: 3000),
     );
     Scaffold.of(context).showSnackBar(snackBar);
-    await KeranjangDatabaseProvider.db.insertToDb(CartItem(burg:burger , quantity: 1));
+    await db.saveNote(CartItem(burg:burger , quantity: 1));
     Provider.of<MyCart>(context).addItemsSf(CartItem(burg: burger , quantity: 1));
 
   }

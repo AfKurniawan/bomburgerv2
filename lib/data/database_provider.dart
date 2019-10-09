@@ -28,9 +28,7 @@ class KeranjangDatabaseProvider extends ChangeNotifier {
 
   static final _databaseName = "cart.db";
   static final _databaseVersion = 1;
-
   static final table = 'cart';
-
   static final columnId = 'id';
   static final columnName = 'name';
   static final columnQty = 'qty';
@@ -99,6 +97,17 @@ class KeranjangDatabaseProvider extends ChangeNotifier {
     return raw;
   }*/
 
+
+  Future<int> addPersonToDatabase(CartItem person) async {
+    final db = await database;
+    var raw  = await db.insert(
+      "cart",
+      person.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return raw;
+  }
+
   insertToDb(CartItem cartItem) async {
     Database db = await database;
     Map<String, dynamic> row = {
@@ -133,19 +142,7 @@ class KeranjangDatabaseProvider extends ChangeNotifier {
     return response.isNotEmpty ? Keranjang.fromMap(response.first) : null;
   }
 
-/*  Future<List<Keranjang>> getAllCarts() async {
-    final db = await database;
-    var response = await db.query(KeranjangDatabaseProvider.table);
-    print(response);
-    list = response.map((c) => Keranjang.fromMap(c)).toList();
-    return list;
-  }*/
 
- /* Future<List<Map<String, dynamic>>> getAllCarts() async {
-    Database db = await this.database;
-    var mapList = await db.query('contact', orderBy: 'name');
-    return mapList;
-  }*/
 
   Future<List<Keranjang>> getAllCarts() async {
     final db = await database;

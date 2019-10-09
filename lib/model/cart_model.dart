@@ -135,4 +135,5 @@ class CartItem {
       'quantity': this.quantity,
     };
   }
+
 }
