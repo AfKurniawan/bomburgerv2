@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bomburger/model/new_cart_model.dart';
 import 'package:flutter/material.dart';
 import 'package:bomburger/model/burger_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +10,11 @@ class MyCart extends ChangeNotifier {
 
   List<CartItem> items = [];
 
+  List<Keranjang> cmItems = [];
+
   List<CartItem> get cartItems => items;
+
+  List<Keranjang> get mItems => cmItems;
 
 
   List<Burger> bitems = [];
@@ -19,6 +24,8 @@ class MyCart extends ChangeNotifier {
   List<Burger> get cartBitems => bitems;
 
   SharedPreferences sharedPreferences;
+
+
 
 
 
@@ -63,6 +70,7 @@ class MyCart extends ChangeNotifier {
     int qty=1;
     lst.insert(qty++, burg);
 
+
     List<String> stringList = lst.map(
             (item) => json.encode(item.toMap()
         )).toList();
@@ -94,11 +102,12 @@ class MyCart extends ChangeNotifier {
     notifyListeners();
   }
 
-  void decreaseItem(CartItem cartModel) {
-    if (cartItems[cartItems.indexOf(cartModel)].quantity <= 1) {
+  void decreaseItem(Keranjang items) {
+
+    if (mItems[mItems.indexOf(items)].qty <= 1) {
       return;
     }
-    cartItems[cartItems.indexOf(cartModel)].quantity--;
+    mItems[mItems.indexOf(items)].qty --;
     notifyListeners();
   }
 

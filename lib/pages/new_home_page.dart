@@ -6,6 +6,7 @@ import 'package:bomburger/model/burger_model.dart';
 import 'package:bomburger/model/cart_model.dart';
 import 'package:bomburger/model/new_cart_model.dart';
 import 'package:bomburger/pages/details.dart';
+import 'package:bomburger/pages/new_cart.dart';
 import 'package:bomburger/widgets/cart_bottom_sheet.dart';
 import 'package:bomburger/pages/cart_page_from_db.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +99,7 @@ class _NewHomePageState extends State<NewHomePage> {
           IconButton(icon: Icon(Icons.shopping_cart), onPressed:(){
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> MyCartPage())
+                MaterialPageRoute(builder: (context)=> CartScreen())
             );
           }),
               Positioned(
@@ -131,8 +132,6 @@ class _NewHomePageState extends State<NewHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-
 
     return Scaffold(
       body: Container(

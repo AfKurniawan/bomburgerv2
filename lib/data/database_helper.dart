@@ -10,18 +10,12 @@ class DatabaseHelper {
 
   factory DatabaseHelper() => _instance;
 
- /* final String tableName = 'cart';
-  final String columnId = 'id';
-  final String columnName = 'nama';
-  final String columnQty = 'qty';
-  final String columnProdId = 'prodid';*/
 
-  static final _databaseName = "cart.db";
-  static final _databaseVersion = 1;
   static final tableName = 'cart';
   static final columnId = 'id';
   static final columnName = 'nama';
   static final columnQty = 'qty';
+  static final columnImg = 'img';
   static final columnProdId = 'prodid';
 
   static Database _db;
@@ -40,24 +34,23 @@ class DatabaseHelper {
   initDb() async {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'carts.db');
-
-//    await deleteDatabase(path); // just for testing
-
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
   }
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnName TEXT, $columnQty TEXT, $columnProdId TEXT)');
+        'CREATE TABLE $tableName('
+            '$columnId INTEGER PRIMARY KEY, '
+            '$columnName TEXT, '
+            '$columnQty TEXT, '
+            '$columnImg TEXT, '
+            '$columnProdId TEXT)');
   }
 
   Future<int> saveNote(CartItem note) async {
     var dbClient = await db;
     var result = await dbClient.insert(tableName, note.toMap());
-   // var result = await dbClient.rawInsert(
-   //     'INSERT INTO $tableName ($columnName, $columnQty, $columnProdId) VALUES (\'${note.burg.name}\', \'${note.quantity}\', \'${note.burg.id})\'');
-
     return result;
   }
 
@@ -66,7 +59,9 @@ class DatabaseHelper {
     Map<String, dynamic> row = {
       DatabaseHelper.columnName: cartItem.burg.name,
       DatabaseHelper.columnQty: cartItem.quantity,
-      DatabaseHelper.columnProdId: cartItem.burg.id,
+      DatabaseHelper.columnImg: cartItem.burg.picture,
+      DatabaseHelper.columnProdId: cartItem.burg.id
+
 
     };
 
@@ -76,8 +71,7 @@ class DatabaseHelper {
   }
   Future<List> getAllNotes() async {
     var dbClient = await db;
-    var result = await dbClient.query(tableName, columns: [columnId, columnName, columnQty, columnProdId]);
-//    var result = await dbClient.rawQuery('SELECT * FROM $tableNote');
+    var result = await dbClient.query(tableName, columns: [columnId, columnName, columnQty, columnImg, columnProdId]);
 
     return result.toList();
   }
@@ -90,10 +84,9 @@ class DatabaseHelper {
   Future<Keranjang> getNote(int id) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(tableName,
-        columns: [columnId, columnName, columnQty, columnProdId],
+        columns: [columnId, columnName, columnQty, columnImg, columnProdId],
         where: '$columnId = ?',
         whereArgs: [id]);
-//    var result = await dbClient.rawQuery('SELECT * FROM $tableNote WHERE $columnId = $id');
 
     if (result.length > 0) {
       return new Keranjang.fromMap(result.first);
@@ -105,14 +98,11 @@ class DatabaseHelper {
   Future<int> deleteNote(int id) async {
     var dbClient = await db;
     return await dbClient.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
-//    return await dbClient.rawDelete('DELETE FROM $tableNote WHERE $columnId = $id');
   }
 
   Future<int> updateNote(Keranjang krj) async {
     var dbClient = await db;
     return await dbClient.update(tableName, krj.toMap(), where: "$columnId = ?", whereArgs: [krj.id]);
-//    return await dbClient.rawUpdate(
-//        'UPDATE $tableNote SET $columnTitle = \'${note.title}\', $columnDescription = \'${note.description}\' WHERE $columnId = ${note.id}');
   }
 
   Future close() async {

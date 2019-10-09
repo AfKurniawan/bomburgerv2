@@ -16,7 +16,8 @@
 class Keranjang {
   int _id;
   String _nama;
-  String _qty;
+  int _qty;
+  String _img;
   String _prodid;
 
   Keranjang(this._id, this._nama, this._qty, this._prodid);
@@ -25,13 +26,15 @@ class Keranjang {
     this._id = obj['id'];
     this._nama = obj['nama'];
     this._qty = obj['qty'];
+    this._img = obj['img'];
     this._prodid = obj['prodid'];
 
   }
 
   int get id => _id;
   String get nama => _nama;
-  String get qty => _qty;
+  int get qty => _qty;
+  String get img => _img;
   String get proidid => _prodid;
 
   Map<String, dynamic> toMap() {
@@ -41,6 +44,7 @@ class Keranjang {
     }
     map['nama'] = _nama;
     map['qty'] = _qty;
+    map['img'] = _img;
     map['prodid'] = _prodid;
 
     return map;
@@ -50,6 +54,7 @@ class Keranjang {
     this._id = map['id'];
     this._nama = map['nama'];
     this._qty = map['qty'];
+    this._img = map['img'];
     this._prodid = map['prodid'];
   }
 }
