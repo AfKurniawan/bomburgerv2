@@ -10,11 +10,19 @@ class DatabaseHelper {
 
   factory DatabaseHelper() => _instance;
 
-  final String tableName = 'cart';
+ /* final String tableName = 'cart';
   final String columnId = 'id';
   final String columnName = 'nama';
   final String columnQty = 'qty';
-  final String columnProdId = 'prodid';
+  final String columnProdId = 'prodid';*/
+
+  static final _databaseName = "cart.db";
+  static final _databaseVersion = 1;
+  static final tableName = 'cart';
+  static final columnId = 'id';
+  static final columnName = 'nama';
+  static final columnQty = 'qty';
+  static final columnProdId = 'prodid';
 
   static Database _db;
 
@@ -47,12 +55,25 @@ class DatabaseHelper {
   Future<int> saveNote(CartItem note) async {
     var dbClient = await db;
     var result = await dbClient.insert(tableName, note.toMap());
-//    var result = await dbClient.rawInsert(
-//        'INSERT INTO $tableNote ($columnTitle, $columnDescription) VALUES (\'${note.title}\', \'${note.description}\')');
+   // var result = await dbClient.rawInsert(
+   //     'INSERT INTO $tableName ($columnName, $columnQty, $columnProdId) VALUES (\'${note.burg.name}\', \'${note.quantity}\', \'${note.burg.id})\'');
 
     return result;
   }
 
+  insertToDb(CartItem cartItem) async {
+    var dbClient = await db;
+    Map<String, dynamic> row = {
+      DatabaseHelper.columnName: cartItem.burg.name,
+      DatabaseHelper.columnQty: cartItem.quantity,
+      DatabaseHelper.columnProdId: cartItem.burg.id,
+
+    };
+
+    await dbClient.insert(DatabaseHelper.tableName, row);
+    print(await dbClient.query(DatabaseHelper.tableName));
+
+  }
   Future<List> getAllNotes() async {
     var dbClient = await db;
     var result = await dbClient.query(tableName, columns: [columnId, columnName, columnQty, columnProdId]);

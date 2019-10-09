@@ -316,7 +316,7 @@ class _NewHomePageState extends State<NewHomePage> {
       duration: Duration(milliseconds: 3000),
     );
     Scaffold.of(context).showSnackBar(snackBar);
-    await db.saveNote(CartItem(burg:burger , quantity: 1));
+    await db.insertToDb(CartItem(burg:burger , quantity: 1));
     Provider.of<MyCart>(context).addItemsSf(CartItem(burg: burger , quantity: 1));
 
   }
