@@ -16,11 +16,11 @@ import 'dart:convert';
 
 ProgressDialog pd;
 
-class CheckOutPage extends StatefulWidget {
-  _CheckOutPageState createState() => _CheckOutPageState();
+class NewCheckOutPage extends StatefulWidget {
+  _NewCheckOutPageState createState() => _NewCheckOutPageState();
 }
 
-class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderStateMixin {
+class _NewCheckOutPageState extends State<NewCheckOutPage> with SingleTickerProviderStateMixin {
   var now = DateTime.now();
   get weekDay => DateFormat('EEEE').format(now);
   get day => DateFormat('dd').format(now);
@@ -86,7 +86,6 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     post(Constants.addSalesUrl, {
       "amount": '${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}',
       "receive_amount": '${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}',
-//      "change_amount": controllerChangeAmount.text,
      "payment_type": "Cash",
 //      "customer_id": controllerCustomerId.text,
       "product_id": '${cart.cartItems}',
@@ -130,6 +129,9 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+
+
+
 
     pd = new ProgressDialog(context,type: ProgressDialogType.Normal);
 

@@ -1,12 +1,12 @@
 import 'package:bomburger/constants/constants.dart';
 import 'package:bomburger/constants/values.dart';
-import 'package:bomburger/data/database.dart';
+import 'package:bomburger/data/database_provider.dart';
 import 'package:bomburger/model/burger_model.dart';
 import 'package:bomburger/model/cart_model.dart';
 import 'package:bomburger/model/new_cart_model.dart';
 import 'package:bomburger/pages/details.dart';
 import 'package:bomburger/widgets/cart_bottom_sheet.dart';
-import 'package:bomburger/widgets/cart_page.dart';
+import 'package:bomburger/pages/cart_page_from_db.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -272,7 +272,7 @@ class _NewHomePageState extends State<NewHomePage> {
                           ),
                         ),
 
-                        onTap: () async {
+                        /*onTap: () async {
                           final snackBar = SnackBar(
                             content: Text(list[position].name + "added to cart"),
                             duration: Duration(milliseconds: 3000),
@@ -281,10 +281,15 @@ class _NewHomePageState extends State<NewHomePage> {
 
                             await KeranjangDatabaseProvider.db.addCartToDatabase(Keranjang(nama: list[position].name, qty: 1.toString()));
                            // Navigator.pop(context);
-                          }
+                          }*/
 
 
-                        //onTap: () => addItemToCard(list[position]),
+                        onTap: () async {
+
+                          /*await KeranjangDatabaseProvider.db.addCartToDatabase(
+                              Keranjang(nama: list[position].name, qty: 1.toString()));*/
+                          addItemToCard(context, list[position]);
+                        }
 
                       ),
                     )
@@ -305,7 +310,8 @@ class _NewHomePageState extends State<NewHomePage> {
       duration: Duration(milliseconds: 3000),
     );
     Scaffold.of(context).showSnackBar(snackBar);
-    Provider.of<MyCart>(context).addItemsSf(CartItem(burg:burger, quantity: 1));
+    await KeranjangDatabaseProvider.db.insertToDb(CartItem(burg:burger , quantity: 1));
+    Provider.of<MyCart>(context).addItemsSf(CartItem(burg: burger , quantity: 1));
 
   }
 

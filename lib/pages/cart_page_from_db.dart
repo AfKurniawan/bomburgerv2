@@ -1,4 +1,4 @@
-import 'package:bomburger/data/database.dart';
+import 'package:bomburger/data/database_provider.dart';
 import 'package:bomburger/model/new_cart_model.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +8,11 @@ class MyCartPage extends StatefulWidget {
 }
 
 class _MyCartPage extends State<MyCartPage> {
+  int count = 0;
+
+  List<Keranjang> contactList;
+
+
   @override
   void didUpdateWidget(MyCartPage oldWidget) {
     // TODO: implement didUpdateWidget
@@ -17,7 +22,12 @@ class _MyCartPage extends State<MyCartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+    if (contactList == null) {
+      contactList = List<Keranjang>();
+    }
+
+      return Scaffold(
       appBar: AppBar(
         title: Text("Your Cart"),
         actions: <Widget>[
@@ -70,6 +80,8 @@ class _MyCartPage extends State<MyCartPage> {
           }
         },
       ),
+
+
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
@@ -77,6 +89,37 @@ class _MyCartPage extends State<MyCartPage> {
                 MaterialPageRoute(builder: (context) => EditPerson(false)));*/
           }
           ),
+    );
+  }
+
+  ListView createListView() {
+    TextStyle textStyle = Theme.of(context).textTheme.subhead;
+    return ListView.builder(
+      itemCount: count,
+      itemBuilder: (BuildContext context, int index) {
+        return Card(
+          color: Colors.white,
+          elevation: 2.0,
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.red,
+              child: Icon(Icons.people),
+            ),
+            title: Text(this.contactList[index].nama, style: textStyle,),
+            subtitle: Text(this.contactList[index].qty),
+            trailing: GestureDetector(
+              child: Icon(Icons.delete),
+              onTap: () {
+                //deleteContact(contactList[index]);
+              },
+            ),
+            onTap: () async {
+             /* var contact = await navigateToEntryForm(context, this.contactList[index]);
+              if (contact != null) editContact(contact);*/
+            },
+          ),
+        );
+      },
     );
   }
 }

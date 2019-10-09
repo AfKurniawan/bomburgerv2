@@ -21,6 +21,8 @@ class MyCart extends ChangeNotifier {
   SharedPreferences sharedPreferences;
 
 
+
+
   void addItem(CartItem cartItem) {
     for (CartItem cart in cartItems) {
       if (cartItem.burg.name == cart.burg.name) {
@@ -43,9 +45,10 @@ class MyCart extends ChangeNotifier {
     }
 
     items.add(cartItem);
-    setSharedPrefs(cartItem.burg);
+    //setSharedPrefs(cartItem.burg);
     notifyListeners();
-    getSharedPrefs();
+
+
 
 
   }
@@ -116,12 +119,11 @@ class CartItem {
 
 
   Burger burg;
-  String name;
   int quantity;
 
 
 
-  CartItem({this.burg, this.name, this.quantity});
+  CartItem({this.burg, this.quantity});
 
   CartItem.fromMap(Map map) :
         this.burg = map['burg'],
