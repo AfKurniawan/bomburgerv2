@@ -102,12 +102,12 @@ class MyCart extends ChangeNotifier {
     notifyListeners();
   }
 
-  void decreaseItem(Keranjang items) {
+  void decreaseItem(CartItem cartModel) {
 
-    if (mItems[mItems.indexOf(items)].qty <= 1) {
+    if (cartItems[cartItems.indexOf(cartModel)].quantity <= 1) {
       return;
     }
-    mItems[mItems.indexOf(items)].qty --;
+    cartItems[cartItems.indexOf(cartModel)].quantity --;
     notifyListeners();
   }
 

@@ -21,9 +21,16 @@ class _MyCartScreenState extends State<CartScreen> {
   List<Keranjang> items = new List();
   DatabaseHelper db = new DatabaseHelper();
 
+  void _calcTotal() async{
+    var total = (await db.calculateTotal())[0]['total'];
+    print(total);
+    setState(() => count == total);
+  }
+
   @override
   void initState() {
     super.initState();
+
     db.getAllNotes().then((carts) {
       setState(() {
         carts.forEach((carts) {
@@ -141,8 +148,8 @@ class _MyCartScreenState extends State<CartScreen> {
                                           InkWell(
                                             customBorder: roundedRectangle4,
                                             onTap: () {
-                                              _quantity -= 1;
-                                              cart.decreaseItem(items);
+                                              _quantity -- ;
+                                             /* cart.decreaseItem(items);*/
                                            // animationController.reset();
                                            // animationController.forward();
                                             },
@@ -157,7 +164,7 @@ class _MyCartScreenState extends State<CartScreen> {
                                           InkWell(
                                             customBorder: roundedRectangle4,
                                             onTap: () {
-                                              _quantity += 1;
+                                              _quantity ++;
                                               /*cart.increaseItem(cartModel);
                                             animationController.reset();
                                             animationController.forward();*/
@@ -202,7 +209,11 @@ class _MyCartScreenState extends State<CartScreen> {
                           top: 17,
                           right: 0,
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              _calcTotal();
+                              _deleteNote(context, items[i], i);
+
+                            },
                             child: Container(
                               padding: EdgeInsets.all(3.0),
                               color: Colors.cyan,
@@ -250,5 +261,13 @@ class _MyCartScreenState extends State<CartScreen> {
         ),
       ),
     );
+  }
+
+  void _deleteNote(BuildContext context, Keranjang note, int position) async {
+    db.deleteNote(note.id).then((notes) {
+      setState(() {
+        items.removeAt(position);
+      });
+    });
   }
 }

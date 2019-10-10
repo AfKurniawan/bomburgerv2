@@ -301,9 +301,9 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                       InkWell(
                         customBorder: roundedRectangle4,
                         onTap: () {
-                          cart.decreaseItem(cartModel);
+                         /* cart.decreaseItem(cartModel);
                           animationController.reset();
-                          animationController.forward();
+                          animationController.forward();*/
                         },
                         child: Icon(Icons.remove_circle),
                       ),
@@ -314,9 +314,9 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                       InkWell(
                         customBorder: roundedRectangle4,
                         onTap: () {
-                          cart.increaseItem(cartModel);
+                         /* cart.increaseItem(cartModel);
                           animationController.reset();
-                          animationController.forward();
+                          animationController.forward();*/
                         },
                         child: Icon(Icons.add_circle),
                       ),

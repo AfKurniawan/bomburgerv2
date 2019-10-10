@@ -21,6 +21,7 @@ class NewHomePage extends StatefulWidget {
   final Burger bruger;
   final CartItem cit;
 
+
   NewHomePage({this.bruger, this.cit});
 
 
@@ -32,7 +33,6 @@ class _NewHomePageState extends State<NewHomePage> {
 
 
 
-
   List<Burger> list;
 
   List<CartItem> listCart;
@@ -40,6 +40,15 @@ class _NewHomePageState extends State<NewHomePage> {
   SharedPreferences sharedPreferences;
 
   DatabaseHelper db = new DatabaseHelper();
+
+  List<Keranjang> krjlist = new List();
+
+
+
+  int _total = 0;
+  List priceList;
+
+
 
   void getSharedPref() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -66,18 +75,31 @@ class _NewHomePageState extends State<NewHomePage> {
 
 
 
+
+  void _calcTotal(){
+    db.calculateTotal().then((carts) {
+      setState(() {
+        carts.forEach((carts) {
+          krjlist.add(Keranjang.fromMap(carts));
+          print("list Size: " + krjlist.length.toString());
+        });
+      });
+    });
+  }
+
+
+
+
+
   @override
   void initState() {
-
-      // hapus shared prefs login
-      //final prefs = await SharedPreferences.getInstance();
-     // prefs.remove('my_int_key');
-      //prefs.remove('nik');
-    // TODO: implement initState
+    _calcTotal();
     super.initState();
-   // getSharedPrefs();
-
   }
+
+
+
+
 
 
 
@@ -86,6 +108,9 @@ class _NewHomePageState extends State<NewHomePage> {
     Provider.of<MyCart>(context).cartItems.forEach((cart) {
       items += cart.quantity;
     });
+
+    print("asdjasjas "+ krjlist.length.toString());
+
     return SafeArea(
       child: Row(
         children: <Widget>[
@@ -102,7 +127,10 @@ class _NewHomePageState extends State<NewHomePage> {
                 MaterialPageRoute(builder: (context)=> CartScreen())
             );
           }),
-              Positioned(
+
+              krjlist.length == 0 ? new Container() :
+
+             new Positioned(
                 right: 0,
                 child: Container(
                   alignment: Alignment.center,
@@ -110,7 +138,8 @@ class _NewHomePageState extends State<NewHomePage> {
                   decoration:
                       BoxDecoration(shape: BoxShape.circle, color: mainColor),
                   child: Text(
-                    '$items',
+                    krjlist.length.toString(),
+
                     style: TextStyle(fontSize: 12, color: Colors.black),
                   ),
                 ),
@@ -290,6 +319,10 @@ class _NewHomePageState extends State<NewHomePage> {
 
 
                         onTap: () async {
+
+                          _calcTotal();
+
+                          print("list Size fron tap: " + krjlist.length.toString());
 
                           /*await KeranjangDatabaseProvider.db.addCartToDatabase(
                               Keranjang(nama: list[position].name, qty: 1.toString()));*/

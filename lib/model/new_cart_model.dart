@@ -16,7 +16,7 @@
 class Keranjang {
   int _id;
   String _nama;
-  int _qty;
+  String _qty;
   String _img;
   String _prodid;
 
@@ -33,7 +33,7 @@ class Keranjang {
 
   int get id => _id;
   String get nama => _nama;
-  int get qty => _qty;
+  String get qty => _qty;
   String get img => _img;
   String get proidid => _prodid;
 

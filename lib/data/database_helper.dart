@@ -27,7 +27,6 @@ class DatabaseHelper {
       return _db;
     }
     _db = await initDb();
-
     return _db;
   }
 
@@ -80,6 +79,13 @@ class DatabaseHelper {
     var dbClient = await db;
     return Sqflite.firstIntValue(await dbClient.rawQuery('SELECT COUNT(*) FROM $tableName'));
   }
+
+  Future calculateTotal() async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery('SELECT * FROM $tableName');
+    return(result.toList());
+  }
+
 
   Future<Keranjang> getNote(int id) async {
     var dbClient = await db;
